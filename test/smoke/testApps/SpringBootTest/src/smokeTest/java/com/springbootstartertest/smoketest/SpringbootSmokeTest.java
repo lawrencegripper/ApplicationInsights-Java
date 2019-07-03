@@ -1,24 +1,17 @@
 package com.springbootstartertest.smoketest;
 
 import java.util.List;
-import java.util.Map;
 
 import com.microsoft.applicationinsights.internal.schemav2.Data;
 import com.microsoft.applicationinsights.internal.schemav2.Envelope;
-import com.microsoft.applicationinsights.internal.schemav2.EventData;
 import com.microsoft.applicationinsights.internal.schemav2.RemoteDependencyData;
 import com.microsoft.applicationinsights.internal.schemav2.RequestData;
 import com.microsoft.applicationinsights.smoketest.AiSmokeTest;
 import com.microsoft.applicationinsights.smoketest.TargetUri;
 import com.microsoft.applicationinsights.smoketest.UseAgent;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
-import org.hamcrest.TypeSafeMatcher;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -28,52 +21,6 @@ import static org.junit.Assert.fail;
 
 @UseAgent
 public class SpringbootSmokeTest extends AiSmokeTest {
-
-    @Test
-    @TargetUri("/basic/trackEvent")
-    public void trackEvent() {
-        assertEquals(1, mockedIngestion.getCountForType("RequestData"));
-        assertEquals(2, mockedIngestion.getCountForType("EventData"));
-
-        // TODO get event data envelope and verify value
-        final List<EventData> data = mockedIngestion.getTelemetryDataByType("EventData");
-        assertThat(data, hasItem(new TypeSafeMatcher<EventData>() {
-            final String name = "EventDataTest";
-            Matcher<String> nameMatcher = Matchers.equalTo(name);
-            @Override
-            protected boolean matchesSafely(EventData item) {
-                return nameMatcher.matches(item.getName());
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendDescriptionOf(nameMatcher);
-            }
-        }));
-
-        assertThat(data, hasItem(new TypeSafeMatcher<EventData>() {
-            final String expectedKey = "key";
-            final String expectedName = "EventDataPropertyTest";
-            final String expectedPropertyValue = "value";
-            final Double expectedMetricValue = 1d;
-            Matcher<Map<? extends String, ? extends Double>> metricMatcher = Matchers.hasEntry(expectedKey, expectedMetricValue);
-            Matcher<Map<? extends String, ? extends String>> propertyMatcher = Matchers.hasEntry(expectedKey, expectedPropertyValue);
-            Matcher<String> nameMatcher = Matchers.equalTo(expectedName);
-
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendDescriptionOf(nameMatcher);
-                description.appendDescriptionOf(propertyMatcher);
-                description.appendDescriptionOf(metricMatcher);
-            }
-
-            @Override
-            protected boolean matchesSafely(EventData item) {
-                return nameMatcher.matches(item.getName()) && propertyMatcher.matches(item.getProperties()) && metricMatcher.matches(item.getMeasurements());
-            }
-        }));
-    }
 
     @Test
     @TargetUri("/throwsException")

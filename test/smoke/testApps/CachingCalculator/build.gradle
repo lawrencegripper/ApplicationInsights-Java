@@ -1,8 +1,7 @@
 apply plugin: 'war'
 
 dependencies {
-    compile aiCoreJar
-    compile aiWebJar
+    compileOnly aiAgentJar
     compile 'com.google.guava:guava:20.0'
     compile 'redis.clients:jedis:2+'
 
