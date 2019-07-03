@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import com.google.common.io.ByteStreams;
 import org.apache.commons.httpclient.Cookie;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
@@ -17,6 +16,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.context.request.async.DeferredResult;
 
 @Service
@@ -72,7 +72,7 @@ public class TestBean {
         URL obj = new URL("https://www.bing.com");
         HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
         InputStream content = connection.getInputStream();
-        ByteStreams.exhaust(content);
+        StreamUtils.drain(content);
         content.close();
         deferredResult.setResult(connection.getResponseCode());
     }

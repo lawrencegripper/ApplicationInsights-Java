@@ -2,7 +2,6 @@ package com.microsoft.ajl.simplecalc;
 
 import com.microsoft.ajl.simplecalc.model.BinaryCalculation;
 import com.microsoft.ajl.simplecalc.model.BinaryOperator;
-import com.microsoft.applicationinsights.TelemetryClient;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -59,8 +58,6 @@ public class SimpleCalculatorServlet extends HttpServlet {
 
         response.setContentType("text/html;charset=UTF-8");
         renderHtml(bc, response.getWriter());
-
-        new TelemetryClient().trackMetric("TimeToRespond", 111222333);
     }
 
     /**

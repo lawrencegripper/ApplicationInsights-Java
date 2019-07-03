@@ -8,8 +8,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.microsoft.applicationinsights.TelemetryClient;
-
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Logger;
@@ -30,14 +28,7 @@ public class SimpleTestTraceLogBackWithExceptionServlet extends HttpServlet {
         ServletFuncs.geRrenderHtml(request, response);
 
         //jbosseap6 and jbosseap7 have error : org.slf4j.impl.Slf4jLogger cannot be cast to ch.qos.logback.classic.Logger
-        try {
-            Logger logger = (Logger) LoggerFactory.getLogger("root");
-            logger.error("This is an exception!", new Exception("Fake Exception"));
-        } catch (Exception e) {
-            //TODO: handle exception
-            TelemetryClient client = new TelemetryClient();
-            client.trackException(e);
-        }
-
+        Logger logger = (Logger) LoggerFactory.getLogger("root");
+        logger.error("This is an exception!", new Exception("Fake Exception"));
     }
 }

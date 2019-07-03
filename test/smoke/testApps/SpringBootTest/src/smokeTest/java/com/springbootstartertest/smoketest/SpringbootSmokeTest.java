@@ -23,52 +23,6 @@ import static org.junit.Assert.*;
 public class SpringbootSmokeTest extends AiSmokeTest {
 
     @Test
-    @TargetUri("/basic/trackEvent")
-    public void trackEvent() {
-        assertEquals(1, mockedIngestion.getCountForType("RequestData"));
-        assertEquals(2, mockedIngestion.getCountForType("EventData"));
-
-        // TODO get event data envelope and verify value
-        final List<EventData> data = mockedIngestion.getTelemetryDataByType("EventData");
-        assertThat(data, hasItem(new TypeSafeMatcher<EventData>() {
-            final String name = "EventDataTest";
-            Matcher<String> nameMatcher = Matchers.equalTo(name);
-            @Override
-            protected boolean matchesSafely(EventData item) {
-                return nameMatcher.matches(item.getName());
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendDescriptionOf(nameMatcher);
-            }
-        }));
-
-        assertThat(data, hasItem(new TypeSafeMatcher<EventData>() {
-            final String expectedKey = "key";
-            final String expectedName = "EventDataPropertyTest";
-            final String expectedPropertyValue = "value";
-            final Double expectedMetricValue = 1d;
-            Matcher<Map<? extends String, ? extends Double>> metricMatcher = Matchers.hasEntry(expectedKey, expectedMetricValue);
-            Matcher<Map<? extends String, ? extends String>> propertyMatcher = Matchers.hasEntry(expectedKey, expectedPropertyValue);
-            Matcher<String> nameMatcher = Matchers.equalTo(expectedName);
-
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendDescriptionOf(nameMatcher);
-                description.appendDescriptionOf(propertyMatcher);
-                description.appendDescriptionOf(metricMatcher);
-            }
-
-            @Override
-            protected boolean matchesSafely(EventData item) {
-                return nameMatcher.matches(item.getName()) && propertyMatcher.matches(item.getProperties()) && metricMatcher.matches(item.getMeasurements());
-            }
-        }));
-    }
-
-    @Test
     @TargetUri("/throwsException")
     public void testResultCodeWhenRestControllerThrows() {
         assertEquals(1, mockedIngestion.getCountForType("RequestData"));

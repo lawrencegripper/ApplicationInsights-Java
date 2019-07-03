@@ -1,0 +1,49 @@
+{
+  "connectionString": "InstrumentationKey=00000000-0000-0000-0000-0FEEDDADBEEF;IngestionEndpoint=http://fakeingestion:60606/",
+  "customInstrumentation": [
+    {
+      "className": "com.springbootstartertest.controller.TargetObject",
+      "methodName": "one"
+    },
+    {
+      "className": "com.springbootstartertest.controller.TargetObject",
+      "methodName": "two",
+      "signature": "(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "className": "com.springbootstartertest.controller.TargetObject",
+      "methodName": "three"
+    },
+    {
+      "className": "com.springbootstartertest.controller.TargetObject",
+      "methodName": "five"
+    },
+    {
+      "className": "com.springbootstartertest.controller.TargetObject",
+      "methodName": "six"
+    },
+    {
+      "className": "com.springbootstartertest.controller.TargetObject",
+      "methodName": "seven"
+    },
+    {
+      "className": "com.springbootstartertest.controller.TargetObject",
+      "methodName": "eight",
+      "signature": "(Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "className": "com.springbootstartertest.controller.TargetObject",
+      "methodName": "eight",
+      "signature": "(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;"
+    },
+    {
+      "className": "com.springbootstartertest.controller.TargetObject",
+      "methodName": "nine"
+    },
+    {
+      "className": "com.springbootstartertest.controller.TargetObject$NestedObject",
+      "methodName": "four",
+      "signature": "(Z[I[[Ljava/lang/String;)V"
+    }
+  ]
+}
