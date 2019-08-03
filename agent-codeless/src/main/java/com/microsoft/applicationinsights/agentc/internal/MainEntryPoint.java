@@ -168,8 +168,9 @@ public class MainEntryPoint {
         // need to add instrumentation transformers before initializing telemetry configuration below, since that starts
         // some threads and loads some classes that the instrumentation wants to weave
         EngineModule.createWithSomeDefaults(instrumentation, tmpDir, Global.getThreadContextThreadLocal(),
-                instrumentationDescriptors, configServiceFactory, new AgentImpl(),
-                Collections.singletonList("com.microsoft.applicationinsights.agentc"), agentJarFile);
+                instrumentationDescriptors, configServiceFactory, new AgentImpl(), false,
+                Collections.singletonList("com.microsoft.applicationinsights.agentc."),
+                Collections.<String>emptyList(), agentJarFile);
 
         TelemetryConfiguration configuration = TelemetryConfiguration.getActiveWithoutInitializingConfig();
         if (!config.telemetryContext.isEmpty()) {
