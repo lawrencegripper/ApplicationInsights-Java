@@ -31,6 +31,7 @@ public class SpringbootSmokeTest extends AiSmokeTest {
 
         Envelope exceptionEnvelope = exceptionEnvelopeList.get(0);
         RequestData d = getTelemetryDataForType(0, "RequestData");
+        assertEquals("500", d.getResponseCode());
         String requestOperationId = d.getId();
         assertTrue(requestOperationId.contains(exceptionEnvelope.getTags().
                 getOrDefault("ai.operation.id", null)));
