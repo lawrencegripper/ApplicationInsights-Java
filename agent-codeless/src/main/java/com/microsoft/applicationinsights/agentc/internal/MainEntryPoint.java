@@ -198,24 +198,59 @@ public class MainEntryPoint {
         jdbcConfig.put("captureResultSetNavigate", false);
         jdbcConfig.put("captureGetConnection", false);
 
-        Map<String, Object> jdbc = configuration.instrumentation.get("jdbc");
-        if (jdbc != null) {
-            Object explainPlanThresholdInMS = jdbc.get("explainPlanThresholdInMS");
-            if (explainPlanThresholdInMS != null) {
-                if (explainPlanThresholdInMS instanceof Number) {
-                    jdbcConfig.put("explainPlanThresholdMillis", explainPlanThresholdInMS);
-                } else {
-                    startupLogger
-                            .warn("explainPlanThresholdMillis must be a number, but found: {}",
-                                    explainPlanThresholdInMS);
-                }
-            }
-        }
+        jdbcConfig.put("explainPlanThresholdMillis", getExplainPlanThresholdInMS(configuration, 10000));
+
+        Map<String, Object> log4jConfig = new HashMap<>();
+        Map<String, Object> logbackConfig = new HashMap<>();
+
+        // must be one of trace, debug, info, warn, error (which are supported by both log4j and logback)
+        String threshold = getLoggingThreshold(configuration, "warn");
+        log4jConfig.put("threshold", threshold);
+        logbackConfig.put("threshold", threshold);
 
         instrumentationConfig.put("servlet", servletConfig);
         instrumentationConfig.put("jdbc", jdbcConfig);
+        instrumentationConfig.put("log4j", log4jConfig);
+        instrumentationConfig.put("logback", logbackConfig);
 
         return instrumentationConfig;
+    }
+
+    private static Number getExplainPlanThresholdInMS(Configuration configuration, Number defaultValue) {
+        Map<String, Object> jdbc = configuration.instrumentation.get("jdbc");
+        if (jdbc == null) {
+            return defaultValue;
+        }
+        Object explainPlanThresholdInMS = jdbc.get("explainPlanThresholdInMS");
+        if (explainPlanThresholdInMS == null) {
+            return defaultValue;
+        }
+        if (!(explainPlanThresholdInMS instanceof Number)) {
+            startupLogger.warn("jdbc explainPlanThresholdMillis must be a number, but found: {}",
+                    explainPlanThresholdInMS.getClass());
+            return defaultValue;
+        }
+        return (Number) explainPlanThresholdInMS;
+    }
+
+    private static String getLoggingThreshold(Configuration configuration, String defaultValue) {
+        Map<String, Object> logging = configuration.instrumentation.get("logging");
+        if (logging == null) {
+            return defaultValue;
+        }
+        Object thresholdObj = logging.get("threshold");
+        if (thresholdObj == null) {
+            return defaultValue;
+        }
+        if (!(thresholdObj instanceof String)) {
+            startupLogger.warn("logging threshold must be a string, but found: {}", thresholdObj.getClass());
+            return defaultValue;
+        }
+        String threshold = (String) thresholdObj;
+        if (threshold.isEmpty()) {
+            return defaultValue;
+        }
+        return threshold;
     }
 
     private static Connection parseConnectionString(@Nullable String connectionString) {
