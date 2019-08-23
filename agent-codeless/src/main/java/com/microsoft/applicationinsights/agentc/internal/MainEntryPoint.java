@@ -151,6 +151,8 @@ public class MainEntryPoint {
             sdkLogger.setType("CONSOLE");
             sdkLogger.setLevel("TRACE");
             xmlConfiguration.setSdkLogger(sdkLogger);
+        }
+        if (config.developerMode) {
             xmlConfiguration.getChannel().setDeveloperMode(true);
         }
 

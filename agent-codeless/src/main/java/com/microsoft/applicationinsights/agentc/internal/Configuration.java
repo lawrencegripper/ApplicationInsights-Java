@@ -40,6 +40,7 @@ public class Configuration {
     public List<CustomInstrumentation> customInstrumentation = Collections.emptyList();
 
     public boolean debug;
+    public boolean developerMode;
 
     public static class DistributedTracing {
 
