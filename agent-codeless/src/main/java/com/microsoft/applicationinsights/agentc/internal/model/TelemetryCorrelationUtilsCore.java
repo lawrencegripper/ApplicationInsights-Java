@@ -90,14 +90,14 @@ public class TelemetryCorrelationUtilsCore {
 
         try {
             if (response == null) {
-                logger.error("Failed to resolve correlation. response is null.");
+                logger.debug("Failed to resolve correlation. response is null.");
                 return;
             }
 
             //add the target appId for the response header
             addTargetAppIdForResponseHeader(response, responseHeaderSetter);
         } catch (Exception e) {
-            logger.error("Failed to resolve correlation: {}", e.toString());
+            logger.debug("Failed to resolve correlation: {}", e.toString());
             logger.trace("Failed to resolve correlation", e);
         }
     }
@@ -137,13 +137,13 @@ public class TelemetryCorrelationUtilsCore {
 
         String instrumentationKey = TelemetryConfiguration.getActive().getInstrumentationKey();
         if (instrumentationKey == null || instrumentationKey.isEmpty()) {
-            logger.error("Failed to generate target correlation. InstrumentationKey is null or empty.");
+            logger.debug("Failed to generate target correlation. InstrumentationKey is null or empty.");
             return "";
         }
 
         String target = generateSourceTargetCorrelation(instrumentationKey, requestContext);
         if (target == null) {
-            logger.warn("Target value is null and hence returning empty string");
+            logger.debug("Target value is null and hence returning empty string");
             return ""; // we want an empty string instead of null so it plays nicer with bytecode injection
         }
 
@@ -165,20 +165,20 @@ public class TelemetryCorrelationUtilsCore {
         try {
             String requestContext = requestHeaderGetter.get(request, REQUEST_CONTEXT_HEADER_NAME);
             if (Strings.isNullOrEmpty(requestContext)) {
-                logger.info("Skip resolving request source as the following header was not found: {}",
+                logger.debug("Skip resolving request source as the following header was not found: {}",
                         REQUEST_CONTEXT_HEADER_NAME);
                 return;
             }
 
             if (instrumentationKey == null || instrumentationKey.isEmpty()) {
-                logger.error("Failed to resolve correlation. InstrumentationKey is null or empty.");
+                logger.debug("Failed to resolve correlation. InstrumentationKey is null or empty.");
                 return;
             }
 
             String source = generateSourceTargetCorrelation(instrumentationKey, requestContext);
             requestTelemetry.setSource(source);
         } catch (Exception e) {
-            logger.error("Failed to resolve request source: ", e.toString());
+            logger.debug("Failed to resolve request source: ", e.toString());
             logger.trace("Failed to resolve request source", e);
         }
     }
@@ -206,7 +206,7 @@ public class TelemetryCorrelationUtilsCore {
         String baggage = requestHeaderGetter.get(request, CORRELATION_CONTEXT_HEADER_NAME);
 
         if (Strings.isNullOrEmpty(baggage)) {
-            logger.warn("could not access header information: {}", CORRELATION_CONTEXT_HEADER_NAME);
+            logger.debug("could not access header information: {}", CORRELATION_CONTEXT_HEADER_NAME);
             return;
         }
 

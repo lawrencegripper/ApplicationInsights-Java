@@ -83,7 +83,7 @@ public class TraceContextCorrelationCore {
             addTargetAppIdInResponseHeaderViaRequestContext(response, responseHeaderSetter);
 
         } catch (Exception e) {
-            logger.error("unable to perform correlation", e);
+            logger.debug("unable to perform correlation", e);
         }
     }
 
@@ -258,7 +258,7 @@ public class TraceContextCorrelationCore {
         try {
 
             if (instrumentationKey == null || instrumentationKey.isEmpty()) {
-                logger.error("Failed to resolve correlation. InstrumentationKey is null or empty.");
+                logger.debug("Failed to resolve correlation. InstrumentationKey is null or empty.");
                 return;
             }
 
@@ -274,7 +274,7 @@ public class TraceContextCorrelationCore {
                         return;
                     }
                 }
-                logger.info("Skip resolving request source as the following header was not found: {}",
+                logger.debug("Skip resolving request source as the following header was not found: {}",
                         TRACESTATE_HEADER_NAME);
                 return;
             }
@@ -289,7 +289,7 @@ public class TraceContextCorrelationCore {
             requestTelemetry.setSource(source);
 
         } catch (Exception e) {
-            logger.error("Failed to resolve request source", e);
+            logger.debug("Failed to resolve request source", e);
         }
     }
 
@@ -308,7 +308,7 @@ public class TraceContextCorrelationCore {
 
         String instrumentationKey = TelemetryConfiguration.getActive().getInstrumentationKey();
         if (instrumentationKey == null || instrumentationKey.isEmpty()) {
-            logger.error("Failed to generate target correlation. InstrumentationKey is null or empty.");
+            logger.debug("Failed to generate target correlation. InstrumentationKey is null or empty.");
             return "";
         }
 
@@ -327,7 +327,7 @@ public class TraceContextCorrelationCore {
 
         String target = resolve(headerAppID, currAppId);
         if (target == null) {
-            logger.warn("Target value is null and hence returning empty string");
+            logger.debug("Target value is null and hence returning empty string");
             return ""; // we want an empty string instead of null so it plays nicer with bytecode injection
         }
         return target;
