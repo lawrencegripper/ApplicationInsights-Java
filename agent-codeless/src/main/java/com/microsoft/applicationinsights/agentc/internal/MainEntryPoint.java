@@ -27,9 +27,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.jar.JarFile;
 
 import com.google.common.base.Splitter;
@@ -156,7 +158,32 @@ public class MainEntryPoint {
             xmlConfiguration.getChannel().setDeveloperMode(true);
         }
 
-        List<InstrumentationDescriptor> instrumentationDescriptors = InstrumentationDescriptors.read();
+        Set<String> disabledInstrumentation = new HashSet<>();
+        for (Map.Entry<String, Map<String, Object>> entry : config.instrumentation.entrySet()) {
+            Object enabled = entry.getValue().get("enabled");
+            if (enabled == null) {
+                continue;
+            }
+            if (!(enabled instanceof Boolean)) {
+                startupLogger.warn("{} enabled must be a boolean, but found: {}", entry.getKey(), enabled.getClass());
+                continue;
+            }
+            if (!((Boolean) enabled)) {
+                disabledInstrumentation.add(entry.getKey());
+            }
+        }
+        List<InstrumentationDescriptor> instrumentationDescriptors = new ArrayList<>();
+        for (InstrumentationDescriptor instrumentationDescriptor : InstrumentationDescriptors.read()) {
+            String id = instrumentationDescriptor.id();
+            if (disabledInstrumentation.contains(id)) {
+                continue;
+            }
+            if ((id.equals("log4j") || id.equals("logback"))
+                    && disabledInstrumentation.contains("logging")) {
+                continue;
+            }
+            instrumentationDescriptors.add(instrumentationDescriptor);
+        }
         InstrumentationDescriptor customInstrumentationDescriptor =
                 CustomInstrumentationBuilder.buildCustomInstrumentation(config);
         if (customInstrumentationDescriptor != null) {
